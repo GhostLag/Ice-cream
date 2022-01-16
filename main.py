@@ -9,6 +9,7 @@ from kivy.properties import ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 from kivy.uix.textinput import TextInput
 
 # Edit backgroundRGBA values to change the RGBA values for the background
@@ -35,7 +36,7 @@ class ColoredLabel(Label):
 class MainInterface(BoxLayout):
 
   def importInterface(self, event):
-    print("foo1")
+    return ImportInterface()
 
   def calculateBatchesInterface(self, event):
     print("foo2")
@@ -51,20 +52,29 @@ class MainInterface(BoxLayout):
     title.pos_hint = {'center_x': 0.5}
     self.spacing = '30dp'
     self.orientation = "vertical"
-
     btn1 = Button(text = "Import Data")
-    btn1.bind(on_press = self.importInterface)
     btn2 = Button(text = "Calculate Ice Cream Batches")
+
+    btn1.bind(on_press = self.importInterface)
     btn2.bind(on_press = self.calculateBatchesInterface)
+
     self.add_widget(title)
     self.add_widget(btn1)
     self.add_widget(btn2)
 
 class ImportInterface(BoxLayout):
-    pass
+
+  def __init__(self, **kwargs):
+    super().__init__(**kwargs)
+
+    l1 = Label(text = "test")
+    self.add_widget(l1)
 
 class CalculateBatchesInterface(BoxLayout):
     pass
+
+# screenManager = ScreenManager(transition = WipeTransition())
+# screenManager.add_widget(MainInterface(name = "mainInterface"))
 
 class IceCreamApp(App):
 
