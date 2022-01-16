@@ -9,7 +9,7 @@ from kivy.properties import ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.uix.textinput import TextInput
 
 # Edit backgroundRGBA values to change the RGBA values for the background
@@ -33,36 +33,49 @@ Builder.load_string(kv)
 class ColoredLabel(Label):
     background_color = ListProperty((0, 0, 0, 1))
 
-class MainInterface(BoxLayout):
+
+class MainInterface(BoxLayout, Screen):
 
   def importInterface(self, event):
-    return ImportInterface()
+    self.parent.current = 'importInterface' 
 
   def calculateBatchesInterface(self, event):
-    print("foo2")
+    self.parent.current = 'calculateBatchesInterface'
 
   def __init__(self, **kwargs):
     super().__init__(**kwargs)
 
     title = ColoredLabel(text = f"[color=debf76]Ice Cream Calculator[/color]",
-            font_size = '40dp',
             background_color = (140/255, 78/255, 79/255, 1),
-            markup = True)
-    title.size_hint = (.7, .4)
-    title.pos_hint = {'center_x': 0.5}
-    self.spacing = '30dp'
-    self.orientation = "vertical"
-    btn1 = Button(text = "Import Data")
-    btn2 = Button(text = "Calculate Ice Cream Batches")
+            font_size = '40dp',
+            markup = True,
+            pos_hint = {'center_x': .5},
+            size_hint = (.7, .4))
+
+    btn1 = Button(text = "[color=ddb975]Import Data[/color]",
+            background_color = (140/255, 78/255, 79/255, .5),
+            font_size = '30dp',
+            markup = True,
+            pos_hint = {'center_x': .5},
+            size_hint = (.55, .2))
+    btn2 = Button(text = "[color=ddb975]Calculate Ice Cream Batches[/color]",
+            background_color = (140/255, 78/255, 79/255, .5),
+            font_size = '30dp',
+            markup = True,
+            pos_hint = {'center_x': .5},
+            size_hint = (.55, .2))
 
     btn1.bind(on_press = self.importInterface)
     btn2.bind(on_press = self.calculateBatchesInterface)
+
+    self.spacing = '30dp'
+    self.orientation = "vertical"
 
     self.add_widget(title)
     self.add_widget(btn1)
     self.add_widget(btn2)
 
-class ImportInterface(BoxLayout):
+class ImportInterface(BoxLayout, Screen):
 
   def __init__(self, **kwargs):
     super().__init__(**kwargs)
@@ -70,11 +83,8 @@ class ImportInterface(BoxLayout):
     l1 = Label(text = "test")
     self.add_widget(l1)
 
-class CalculateBatchesInterface(BoxLayout):
+class CalculateBatchesInterface(BoxLayout, Screen):
     pass
-
-# screenManager = ScreenManager(transition = WipeTransition())
-# screenManager.add_widget(MainInterface(name = "mainInterface"))
 
 class IceCreamApp(App):
 
@@ -84,6 +94,12 @@ class IceCreamApp(App):
     foo1 = np.multiply(foo, 2)
     return Label(text = f"[color=debf76]{foo} * 2\n{str(foo1)}[/color]", font_size = '25sp', markup = True)
     '''
-    return MainInterface()
+
+    screenManager = ScreenManager(transition = SlideTransition())
+    screenManager.add_widget(MainInterface(name = "mainInterface"))
+    screenManager.add_widget(ImportInterface(name = "importInterface"))
+    screenManager.add_widget(CalculateBatchesInterface(name = "calculateBatchesInterface"))
+
+    return screenManager
 
 IceCreamApp().run()
